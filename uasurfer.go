@@ -12,11 +12,12 @@ import (
 	"github.com/nigeltiany/uasurfer/types/device"
 	"github.com/nigeltiany/uasurfer/types/os"
 	"github.com/nigeltiany/uasurfer/types/platform"
-	"github.com/nigeltiany/uasurfer/types/versioning"
 )
 
 type Version struct {
-	versioning.Version
+	Major int
+	Minor int
+	Patch int
 }
 
 func (v Version) Less(c Version) bool {

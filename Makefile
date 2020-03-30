@@ -10,14 +10,12 @@ types:
 	types/browser/*.proto \
 	types/device/*.proto \
 	types/os/*.proto \
-	types/platform/*.proto \
-	types/versioning/*.proto
+	types/platform/*.proto
 
 	$(call fix_golang_output,types/browser)
 	$(call fix_golang_output,types/device)
 	$(call fix_golang_output,types/os)
 	$(call fix_golang_output,types/platform)
-	$(call fix_golang_output,types/versioning)
 
 	make delete-fixed
 

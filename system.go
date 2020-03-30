@@ -284,13 +284,13 @@ func (v *Version) parse(str string) bool {
 	}
 	for i := 0; i < 3; i++ {
 		empty := true
-		var val uint32
+		var val int
 		l := len(str) - 1
 
 		for k, c := range str {
 			if c >= '0' && c <= '9' {
 				if empty {
-					val = uint32(c) - 48
+					val = int(c) - 48
 					empty = false
 					if k == l {
 						str = str[:0]
@@ -309,7 +309,7 @@ func (v *Version) parse(str string) bool {
 					break
 				}
 
-				val = 10*val + uint32(c) - 48
+				val = 10*val + int(c) - 48
 				if k == l {
 					str = str[:0]
 				}
