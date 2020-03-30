@@ -1,5 +1,5 @@
 syntax = "proto3";
-package uasurfer.types.os;
+package uasurfer.os;
 
 option go_package = "github.com/nigeltiany/uasurfer/types/os";
 

@@ -1,5 +1,5 @@
 syntax = "proto3";
-package uasurfer.types.versioning;
+package uasurfer.versioning;
 
 option go_package = "github.com/nigeltiany/uasurfer/types/versioning";
 
