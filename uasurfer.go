@@ -15,9 +15,9 @@ import (
 )
 
 type Version struct {
-	Major int
-	Minor int
-	Patch int
+	Major int           `json:"major"`
+	Minor int           `json:"minor"`
+	Patch int           `json:"patch"`
 }
 
 func (v Version) Less(c Version) bool {
@@ -41,20 +41,20 @@ func (v Version) Less(c Version) bool {
 }
 
 type UserAgent struct {
-	Browser    Browser
-	OS         OS
-	Device     device.DeviceType
+	Browser    Browser              `json:"browser"`
+	OS         OS                   `json:"os"`
+	Device     device.DeviceType    `json:"device"`
 }
 
 type Browser struct {
-	Type    browser.BrowserType
-	Version Version
+	Type    browser.BrowserType     `json:"type"`
+	Version Version                 `json:"version"`
 }
 
 type OS struct {
-	Platform platform.Platform
-	Type     os.OS_Type
-	Version  Version
+	Platform platform.Platform      `json:"platform"`
+	Type     os.OS_Type             `json:"type"`
+	Version  Version                `json:"version"`
 }
 
 // Reset resets the UserAgent to it's zero value
