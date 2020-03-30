@@ -4,6 +4,10 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/nigeltiany/uasurfer/types/device"
+	"github.com/nigeltiany/uasurfer/types/os"
+	"github.com/nigeltiany/uasurfer/types/platform"
 )
 
 var (
@@ -36,8 +40,8 @@ func (u *UserAgent) evalOS(ua string) bool {
 		u.evalLinux(ua, agentPlatform)
 
 	case specs == "bb10" || specs == "playbook":
-		u.OS.Platform = PlatformBlackberry
-		u.OS.Name = OSBlackberry
+		u.OS.Platform = platform.Platform_Blackberry
+		u.OS.Type = os.OS_Type_Blackberry
 
 	case specs == "x11" || specs == "linux":
 		u.evalLinux(ua, agentPlatform)
@@ -52,8 +56,8 @@ func (u *UserAgent) evalOS(ua string) bool {
 		switch {
 		// Blackberry
 		case strings.Contains(ua, "blackberry") || strings.Contains(ua, "playbook"):
-			u.OS.Platform = PlatformBlackberry
-			u.OS.Name = OSBlackberry
+			u.OS.Platform = platform.Platform_Blackberry
+			u.OS.Type = os.OS_Type_Blackberry
 
 		// Windows Phone
 		case strings.Contains(agentPlatform, "windows phone "):
@@ -65,8 +69,8 @@ func (u *UserAgent) evalOS(ua string) bool {
 
 		// Kindle
 		case strings.Contains(ua, "kindle/") || amazonFireFingerprint.MatchString(agentPlatform):
-			u.OS.Platform = PlatformLinux
-			u.OS.Name = OSKindle
+			u.OS.Platform = platform.Platform_Linux
+			u.OS.Type = os.OS_Type_Kindle
 
 		// Linux (broader attempt)
 		case strings.Contains(ua, "linux"):
@@ -74,18 +78,18 @@ func (u *UserAgent) evalOS(ua string) bool {
 
 		// WebOS (non-linux flagged)
 		case strings.Contains(ua, "webos") || strings.Contains(ua, "hpwos"):
-			u.OS.Platform = PlatformLinux
-			u.OS.Name = OSWebOS
+			u.OS.Platform = platform.Platform_Linux
+			u.OS.Type = os.OS_Type_Web_OS
 
 		// Nintendo
 		case strings.Contains(ua, "nintendo"):
-			u.OS.Platform = PlatformNintendo
-			u.OS.Name = OSNintendo
+			u.OS.Platform = platform.Platform_Nintendo
+			u.OS.Type = os.OS_Type_Nintendo
 
 		// Playstation
 		case strings.Contains(ua, "playstation") || strings.Contains(ua, "vita") || strings.Contains(ua, "psp"):
-			u.OS.Platform = PlatformPlaystation
-			u.OS.Name = OSPlaystation
+			u.OS.Platform = platform.Platform_Playstation
+			u.OS.Type = os.OS_Type_Playstation
 
 		// Android
 		case strings.Contains(ua, "android"):
@@ -96,8 +100,8 @@ func (u *UserAgent) evalOS(ua string) bool {
 			u.evalMacintosh(ua)
 
 		default:
-			u.OS.Platform = PlatformUnknown
-			u.OS.Name = OSUnknown
+			u.OS.Platform = platform.Platform_Unknown
+			u.OS.Type = os.OS_Type_unknown
 		}
 	}
 
@@ -108,9 +112,9 @@ func (u *UserAgent) evalOS(ua string) bool {
 // all bot related fields if it is
 func (u *UserAgent) maybeBot() bool {
 	if u.IsBot() {
-		u.OS.Platform = PlatformBot
-		u.OS.Name = OSBot
-		u.DeviceType = DeviceComputer
+		u.OS.Platform = platform.Platform_Bot
+		u.OS.Type = os.OS_Type_Bot
+		u.Device = device.DeviceType_computer
 		return true
 	}
 	return false
@@ -124,35 +128,35 @@ func (u *UserAgent) evalLinux(ua string, agentPlatform string) {
 	// Kindle Fire
 	case strings.Contains(ua, "kindle") || amazonFireFingerprint.MatchString(agentPlatform):
 		// get the version of Android if available, though we don't call this OSAndroid
-		u.OS.Platform = PlatformLinux
-		u.OS.Name = OSKindle
+		u.OS.Platform = platform.Platform_Linux
+		u.OS.Type =  os.OS_Type_Kindle
 		u.OS.Version.findVersionNumber(agentPlatform, "android ")
 
 	// Android, Kindle Fire
 	case strings.Contains(ua, "android") || strings.Contains(ua, "googletv"):
 		// Android
-		u.OS.Platform = PlatformLinux
-		u.OS.Name = OSAndroid
+		u.OS.Platform = platform.Platform_Linux
+		u.OS.Type =  os.OS_Type_Android
 		u.OS.Version.findVersionNumber(agentPlatform, "android ")
 
 	// ChromeOS
 	case strings.Contains(ua, "cros"):
-		u.OS.Platform = PlatformLinux
-		u.OS.Name = OSChromeOS
+		u.OS.Platform = platform.Platform_Linux
+		u.OS.Type =  os.OS_Type_Chrome_OS
 
 	// WebOS
 	case strings.Contains(ua, "webos") || strings.Contains(ua, "hpwos"):
-		u.OS.Platform = PlatformLinux
-		u.OS.Name = OSWebOS
+		u.OS.Platform = platform.Platform_Linux
+		u.OS.Type =  os.OS_Type_Web_OS
 
 	// Linux, "Linux-like"
 	case strings.Contains(ua, "x11") || strings.Contains(ua, "bsd") || strings.Contains(ua, "suse") || strings.Contains(ua, "debian") || strings.Contains(ua, "ubuntu"):
-		u.OS.Platform = PlatformLinux
-		u.OS.Name = OSLinux
+		u.OS.Platform = platform.Platform_Linux
+		u.OS.Type =  os.OS_Type_Linux
 
 	default:
-		u.OS.Platform = PlatformLinux
-		u.OS.Name = OSLinux
+		u.OS.Platform = platform.Platform_Linux
+		u.OS.Type =  os.OS_Type_Linux
 	}
 }
 
@@ -163,35 +167,35 @@ func (u *UserAgent) evaliOS(uaPlatform string, agentPlatform string) {
 	switch {
 	// iPhone
 	case strings.HasPrefix(uaPlatform, "iphone"):
-		u.OS.Platform = PlatformiPhone
-		u.OS.Name = OSiOS
+		u.OS.Platform = platform.Platform_iPhone
+		u.OS.Type =  os.OS_Type_iOS
 		u.OS.getiOSVersion(agentPlatform)
 
 	// iPad
 	case strings.HasPrefix(uaPlatform, "ipad"):
-		u.OS.Platform = PlatformiPad
-		u.OS.Name = OSiOS
+		u.OS.Platform = platform.Platform_iPad
+		u.OS.Type =  os.OS_Type_iOS
 		u.OS.getiOSVersion(agentPlatform)
 
 	// iPod
 	case strings.HasPrefix(uaPlatform, "ipod touch") || strings.HasPrefix(uaPlatform, "ipod"):
-		u.OS.Platform = PlatformiPod
-		u.OS.Name = OSiOS
+		u.OS.Platform = platform.Platform_iPod
+		u.OS.Type =  os.OS_Type_iOS
 		u.OS.getiOSVersion(agentPlatform)
 
 	default:
-		u.OS.Platform = PlatformiPad
-		u.OS.Name = OSUnknown
+		u.OS.Platform = platform.Platform_iPad
+		u.OS.Type =  os.OS_Type_unknown
 	}
 }
 
 func (u *UserAgent) evalWindowsPhone(agentPlatform string) {
-	u.OS.Platform = PlatformWindowsPhone
+	u.OS.Platform = platform.Platform_WindowsPhone
 
 	if u.OS.Version.findVersionNumber(agentPlatform, "windows phone os ") || u.OS.Version.findVersionNumber(agentPlatform, "windows phone ") {
-		u.OS.Name = OSWindowsPhone
+		u.OS.Type =  os.OS_Type_Windows_Phone
 	} else {
-		u.OS.Name = OSUnknown
+		u.OS.Type =  os.OS_Type_unknown
 	}
 }
 
@@ -200,8 +204,8 @@ func (u *UserAgent) evalWindows(ua string) {
 	switch {
 	//Xbox -- it reads just like Windows
 	case strings.Contains(ua, "xbox"):
-		u.OS.Platform = PlatformXbox
-		u.OS.Name = OSXbox
+		u.OS.Platform = platform.Platform_Xbox
+		u.OS.Type =  os.OS_Type_Xbox
 		if !u.OS.Version.findVersionNumber(ua, "windows nt ") {
 			u.OS.Version.Major = 6
 			u.OS.Version.Minor = 0
@@ -210,36 +214,36 @@ func (u *UserAgent) evalWindows(ua string) {
 
 	// No windows version
 	case !strings.Contains(ua, "windows "):
-		u.OS.Platform = PlatformWindows
-		u.OS.Name = OSUnknown
+		u.OS.Platform = platform.Platform_Windows
+		u.OS.Type =  os.OS_Type_unknown
 
 	case strings.Contains(ua, "windows nt ") && u.OS.Version.findVersionNumber(ua, "windows nt "):
-		u.OS.Platform = PlatformWindows
-		u.OS.Name = OSWindows
+		u.OS.Platform = platform.Platform_Windows
+		u.OS.Type =  os.OS_Type_Windows
 
 	case strings.Contains(ua, "windows xp"):
-		u.OS.Platform = PlatformWindows
-		u.OS.Name = OSWindows
+		u.OS.Platform = platform.Platform_Windows
+		u.OS.Type =  os.OS_Type_Windows
 		u.OS.Version.Major = 5
 		u.OS.Version.Minor = 1
 		u.OS.Version.Patch = 0
 
 	default:
-		u.OS.Platform = PlatformWindows
-		u.OS.Name = OSUnknown
+		u.OS.Platform = platform.Platform_Windows
+		u.OS.Type =  os.OS_Type_unknown
 
 	}
 }
 
 func (u *UserAgent) evalMacintosh(uaPlatformGroup string) {
-	u.OS.Platform = PlatformMac
+	u.OS.Platform = platform.Platform_Mac
 	if i := strings.Index(uaPlatformGroup, "os x 10"); i != -1 {
-		u.OS.Name = OSMacOSX
+		u.OS.Type =  os.OS_Type_Mac_OSX
 		u.OS.Version.parse(uaPlatformGroup[i+5:])
 
 		return
 	}
-	u.OS.Name = OSUnknown
+	u.OS.Type =  os.OS_Type_unknown
 }
 
 func (v *Version) findVersionNumber(s string, m string) bool {
@@ -280,13 +284,13 @@ func (v *Version) parse(str string) bool {
 	}
 	for i := 0; i < 3; i++ {
 		empty := true
-		val := 0
+		var val uint32
 		l := len(str) - 1
 
 		for k, c := range str {
 			if c >= '0' && c <= '9' {
 				if empty {
-					val = int(c) - 48
+					val = uint32(c) - 48
 					empty = false
 					if k == l {
 						str = str[:0]
@@ -305,7 +309,7 @@ func (v *Version) parse(str string) bool {
 					break
 				}
 
-				val = 10*val + int(c) - 48
+				val = 10*val + uint32(c) - 48
 				if k == l {
 					str = str[:0]
 				}

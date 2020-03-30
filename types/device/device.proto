@@ -1,0 +1,14 @@
+syntax = "proto3";
+package uasurfer.types.device;
+
+option go_package = "github.com/nigeltiany/uasurfer/types/device";
+
+enum DeviceType {
+    unknown = 0;
+    tablet = 1;
+    phone = 2;
+    console = 3;
+    wearable = 4;
+    tv = 5;
+    computer = 6;
+}

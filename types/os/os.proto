@@ -1,0 +1,22 @@
+syntax = "proto3";
+package uasurfer.types.os;
+
+option go_package = "github.com/nigeltiany/uasurfer/types/os";
+
+enum OS_Type {
+    unknown = 0;
+    Windows_Phone = 1;
+    Windows = 2;
+    Mac_OSX = 3;
+    iOS = 4;
+    Android = 5;
+    Blackberry = 6;
+    Chrome_OS = 7;
+    Kindle = 8;
+    Web_OS = 9;
+    Linux = 10;
+    Playstation = 11;
+    Xbox = 12;
+    Nintendo = 13;
+    Bot = 14;
+}

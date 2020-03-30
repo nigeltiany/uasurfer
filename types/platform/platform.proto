@@ -1,0 +1,20 @@
+syntax = "proto3";
+package uasurfer.types.platform;
+
+option go_package = "github.com/nigeltiany/uasurfer/types/platform";
+
+enum Platform {
+    Unknown  = 0;
+    Windows  = 1;
+    Mac = 2;
+    Linux = 3;
+    iPad = 4;
+    iPhone = 5;
+    iPod = 6;
+    Blackberry = 7;
+    WindowsPhone = 8;
+    Playstation = 9;
+    Xbox = 10;
+    Nintendo = 11;
+    Bot = 12;
+}

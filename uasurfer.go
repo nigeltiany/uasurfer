@@ -5,139 +5,18 @@
 // strings.
 package uasurfer
 
-import "strings"
+import (
+	"strings"
 
-//go:generate stringer -type=DeviceType,BrowserName,OSName,Platform -output=const_string.go
-
-// DeviceType (int) returns a constant.
-type DeviceType int
-
-// A complete list of supported devices in the
-// form of constants.
-const (
-	DeviceUnknown DeviceType = iota
-	DeviceComputer
-	DeviceTablet
-	DevicePhone
-	DeviceConsole
-	DeviceWearable
-	DeviceTV
+	"github.com/nigeltiany/uasurfer/types/browser"
+	"github.com/nigeltiany/uasurfer/types/device"
+	"github.com/nigeltiany/uasurfer/types/os"
+	"github.com/nigeltiany/uasurfer/types/platform"
+	"github.com/nigeltiany/uasurfer/types/versioning"
 )
-
-// StringTrimPrefix is like String() but trims the "Device" prefix
-func (d DeviceType) StringTrimPrefix() string {
-	return strings.TrimPrefix(d.String(), "Device")
-}
-
-// BrowserName (int) returns a constant.
-type BrowserName int
-
-// A complete list of supported web browsers in the
-// form of constants.
-const (
-	BrowserUnknown BrowserName = iota
-	BrowserChrome
-	BrowserIE
-	BrowserSafari
-	BrowserFirefox
-	BrowserAndroid
-	BrowserOpera
-	BrowserBlackberry
-	BrowserUCBrowser
-	BrowserSilk
-	BrowserNokia
-	BrowserNetFront
-	BrowserQQ
-	BrowserMaxthon
-	BrowserSogouExplorer
-	BrowserSpotify
-	BrowserNintendo
-	BrowserSamsung
-	BrowserYandex
-	BrowserCocCoc
-	BrowserBot // Bot list begins here
-	BrowserAppleBot
-	BrowserBaiduBot
-	BrowserBingBot
-	BrowserDuckDuckGoBot
-	BrowserFacebookBot
-	BrowserGoogleBot
-	BrowserLinkedInBot
-	BrowserMsnBot
-	BrowserPingdomBot
-	BrowserTwitterBot
-	BrowserYandexBot
-	BrowserCocCocBot
-	BrowserYahooBot // Bot list ends here
-)
-
-// StringTrimPrefix is like String() but trims the "Browser" prefix
-func (b BrowserName) StringTrimPrefix() string {
-	return strings.TrimPrefix(b.String(), "Browser")
-}
-
-// OSName (int) returns a constant.
-type OSName int
-
-// A complete list of supported OSes in the
-// form of constants. For handling particular versions
-// of operating systems (e.g. Windows 2000), see
-// the README.md file.
-const (
-	OSUnknown OSName = iota
-	OSWindowsPhone
-	OSWindows
-	OSMacOSX
-	OSiOS
-	OSAndroid
-	OSBlackberry
-	OSChromeOS
-	OSKindle
-	OSWebOS
-	OSLinux
-	OSPlaystation
-	OSXbox
-	OSNintendo
-	OSBot
-)
-
-// StringTrimPrefix is like String() but trims the "OS" prefix
-func (o OSName) StringTrimPrefix() string {
-	return strings.TrimPrefix(o.String(), "OS")
-}
-
-// Platform (int) returns a constant.
-type Platform int
-
-// A complete list of supported platforms in the
-// form of constants. Many OSes report their
-// true platform, such as Android OS being Linux
-// platform.
-const (
-	PlatformUnknown Platform = iota
-	PlatformWindows
-	PlatformMac
-	PlatformLinux
-	PlatformiPad
-	PlatformiPhone
-	PlatformiPod
-	PlatformBlackberry
-	PlatformWindowsPhone
-	PlatformPlaystation
-	PlatformXbox
-	PlatformNintendo
-	PlatformBot
-)
-
-// StringTrimPrefix is like String() but trims the "Platform" prefix
-func (p Platform) StringTrimPrefix() string {
-	return strings.TrimPrefix(p.String(), "Platform")
-}
 
 type Version struct {
-	Major int
-	Minor int
-	Patch int
+	versioning.Version
 }
 
 func (v Version) Less(c Version) bool {
@@ -163,17 +42,17 @@ func (v Version) Less(c Version) bool {
 type UserAgent struct {
 	Browser    Browser
 	OS         OS
-	DeviceType DeviceType
+	Device     device.DeviceType
 }
 
 type Browser struct {
-	Name    BrowserName
+	Type    browser.BrowserType
 	Version Version
 }
 
 type OS struct {
-	Platform Platform
-	Name     OSName
+	Platform platform.Platform
+	Type     os.OS_Type
 	Version  Version
 }
 
@@ -181,18 +60,19 @@ type OS struct {
 func (ua *UserAgent) Reset() {
 	ua.Browser = Browser{}
 	ua.OS = OS{}
-	ua.DeviceType = DeviceUnknown
+	ua.Device = device.DeviceType_unknown
 }
 
 // IsBot returns true if the UserAgent represent a bot
 func (ua *UserAgent) IsBot() bool {
-	if ua.Browser.Name >= BrowserBot && ua.Browser.Name <= BrowserYahooBot {
+	// If withing bot reserve
+	if ua.Browser.Type >= 20 && ua.Browser.Type <= 60 {
 		return true
 	}
-	if ua.OS.Name == OSBot {
+	if ua.OS.Type == os.OS_Type_Bot {
 		return true
 	}
-	if ua.OS.Platform == PlatformBot {
+	if ua.OS.Platform == platform.Platform_Bot {
 		return true
 	}
 	return false
@@ -216,10 +96,10 @@ func parse(ua string, dest *UserAgent) {
 	ua = normalise(ua)
 	switch {
 	case len(ua) == 0:
-		dest.OS.Platform = PlatformUnknown
-		dest.OS.Name = OSUnknown
-		dest.Browser.Name = BrowserUnknown
-		dest.DeviceType = DeviceUnknown
+		// dest.OS.Platform = PlatformUnknown
+		dest.OS.Type = os.OS_Type_unknown
+		dest.Browser.Type = browser.BrowserType_unknown
+		dest.Device = device.DeviceType_unknown
 
 	// stop on on first case returning true
 	case dest.evalOS(ua):

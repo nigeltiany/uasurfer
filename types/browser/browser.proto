@@ -1,0 +1,45 @@
+syntax = "proto3";
+package uasurfer.types.browser;
+
+option go_package = "github.com/nigeltiany/uasurfer/types/browser";
+
+enum BrowserType {
+    unknown = 0;
+    Chrome = 1;
+    Internet_Explorer = 2;
+    Safari = 3;
+    Firefox = 4;
+    Android = 5;
+    Opera = 6;
+    Blackberry = 7;
+    UC_Browser = 8;
+    Silk = 9;
+    Nokia = 10;
+    NetFront = 11;
+    QQ = 12;
+    Maxthon = 13;
+    Sogou_Explorer = 14;
+    Spotify = 15;
+    Nintendo = 16;
+    Samsung = 17;
+    Yandex = 18;
+    Coc_Coc = 19;
+
+    // ----- Bot List ----- //
+    Bot = 20;
+    AppleBot = 21;
+    BaiduBot = 22;
+    BingBot = 23;
+    DuckDuckGoBot = 24;
+    FacebookBot = 25;
+    GoogleBot = 26;
+    LinkedInBot = 27;
+    MsnBot = 28;
+    PingdomBot = 29;
+    TwitterBot = 30;
+    YandexBot = 31;
+    CocCocBot = 32;
+    YahooBot = 33;
+    reserved 34 to 60; // Bot reserve
+    // ----- End Bot List ----- //
+}
