@@ -6,6 +6,7 @@
 package uasurfer
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/nigeltiany/uasurfer/types/browser"
@@ -38,6 +39,10 @@ func (v Version) Less(c Version) bool {
 	}
 
 	return v.Patch < c.Patch
+}
+
+func (v Version) String(c Version) string {
+	return fmt.Sprintf("%d.%d.%d", v.Major, v.Minor, v.Patch)
 }
 
 type UserAgent struct {
